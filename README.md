@@ -18,9 +18,12 @@ Examples:
 There are two ways of interacting with the script. If launched vith the input string as a command line argument, the script will execute that string once, then terminate. If launched without command line options, the script will contiuously accept commands via standard input until an `exit` command is written.
 
 ### command line mode:
-`sudo ./ledController.py r=250` - sets the controller to red with 100% brighness, then exits.
+`sudo ./ledController.py r=250,g=100,b=20,brightness=70` - sets the controller to red with 100% brighness, then exits.
 
 
 ### stdin mode:
-`sudo ./ledController.py`
+`sudo ./ledController.py` - accepts input until it receives `exit`
 
+## Useful things to know
+
+To turn off the led in the Pimoroni fan-shim service, run the `` with the `--noled` option

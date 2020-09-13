@@ -19,7 +19,7 @@
 
 
 import sys, re
-#import apa102
+# import apa102
 
 #led = apa102.APA102(1, 15, 14, None, brightness=0.05)
 
