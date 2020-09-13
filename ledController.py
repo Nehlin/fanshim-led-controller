@@ -76,11 +76,9 @@ def setLed(values):
 
 def setLedFromLine(line):
     values = parseLine(line)
-    print(values)
     setLed(values)
 
 if len(sys.argv) == 2:
-    print(sys.argv[1])
     setLedFromLine(sys.argv[1])
 else:
     for lineWithBreak in sys.stdin:
