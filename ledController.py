@@ -19,9 +19,15 @@
 
 
 import sys, re
-# import apa102
+from fanshim import FanShim
 
-#led = apa102.APA102(1, 15, 14, None, brightness=0.05)
+# Prevent turning off led on exit. since we don't poll, this is safe.
+class FunShim(FanShim):
+    def _cleanup(self):
+        pass
+
+fanshim = FunShim(disable_button=True)
+
 
 def isAssignment(word):
     return re.match(r'^[a-z]+=[a-z0-9\.]+$', word);
@@ -32,10 +38,21 @@ def standardiseValue(values, key, minVal = 0, maxVal = 255, defaultVal = 0):
     numVal = int(values.get(key, str(defaultVal)))
     values[key] = max(minVal, min(numVal, maxVal))
 
+def applySingleBrightness(values, key):
+    values[key] = int(round(values[key] * values['brightness'] / 100))
+
+# applies brightness percentage to rgb values
+def applyBrightness(values):
+    applySingleBrightness(values, 'r')
+    applySingleBrightness(values, 'g')
+    applySingleBrightness(values, 'b')
+    del values['brightness']
+
+
 # parses an input line into a dictionary.
 def parseLine(line):
     words = line.split(',')
-    values = {}
+    values = {'off': False}
     for word in words:
         if word == 'off':
             return{'off': True}
@@ -47,25 +64,24 @@ def parseLine(line):
     standardiseValue(values, 'g')
     standardiseValue(values, 'b')
     standardiseValue(values, 'brightness', 0, 100, 100)
+    applyBrightness(values)
     return values
 
 
-#def setLed(values):
-#    if values['off']:
-#        led.set_pixel(0, 0, 0, 0)
-#    else:
-#        led.set_pixel(0, values.r, values.g, values.b, values.brightness)
-#    led.show()
+def setLed(values):
+    if values['off']:
+        fanshim.set_light(0, 0, 0)
+    else:
+        fanshim.set_light(values['r'], values['g'], values['b'])
 
 def setLedFromLine(line):
     values = parseLine(line)
-    #setLed(values)
     print(values)
+    setLed(values)
 
-# If command line arguments exist, run once and exit
 if len(sys.argv) == 2:
+    print(sys.argv[1])
     setLedFromLine(sys.argv[1])
-# Otherwise read commands one line at a time until an "exit" command is read 
 else:
     for lineWithBreak in sys.stdin:
         line = lineWithBreak.replace('\n', '')
