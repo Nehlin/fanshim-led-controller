@@ -86,6 +86,6 @@ else:
         if line == 'exit':
             break
         if line == 'ping':
-            print('pong')
+            print('pong\n')
         else:
             setLedFromLine(line)
