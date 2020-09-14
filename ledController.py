@@ -85,4 +85,7 @@ else:
         line = lineWithBreak.replace('\n', '')
         if line == 'exit':
             break
-        setLedFromLine(line)
+        if line == 'ping':
+            print('pong')
+        else:
+            setLedFromLine(line)
